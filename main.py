@@ -1,7 +1,13 @@
 import disnake
 from disnake.ext import commands
+from parser import name, players, maxPlayers, status
 
-bot = commands.Bot(command_prefix="!", help_command=None, intents=disnake.Intents.all())
+activity = disnake.Activity(
+    name=f"{players}/{maxPlayers}",
+    type=disnake.ActivityType.watching,
+)
+
+bot = commands.Bot(command_prefix="!", help_command=None, intents=disnake.Intents.all(), activity=activity)
 
 
 @bot.event
