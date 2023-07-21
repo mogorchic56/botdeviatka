@@ -23,7 +23,7 @@ async def on_member_join(member):
     embed = disnake.Embed(
         title="Новый участник!",
         description=f"{member.name}",
-        color=0xffffff
+        color=0xFF0000
     )
 
     await member.add_roles(role)
@@ -37,11 +37,11 @@ async def on_member_join(member):
 async def statics(member):
     channel = bot.get_channel(1128186670521516124)
     monitoring = disnake.Embed(
-    title="Новый участник!",
-    description=f"member",
-    color=0xffffff
+    title = name,
+    description=f"{players}/{maxPlayers}",
+    color=0xFF0000
     )
     await channel.send(embed=monitoring)
 
 
-bot.run("MTEzMTU4NzczNDIwOTg0MzI1MA.GyoTts.hLOLP28Pb3yLTf1bjJGjiGatNlzNlwhtZOdlU4")
+bot.run("MTEzMTU4NzczNDIwOTg0MzI1MA.GGeP_q.3X4e4Cf1p4PNUO7fGo3y6qICTEq2U0Vki3Q10U")
