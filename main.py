@@ -3,14 +3,11 @@ import requests
 import time
 from disnake.ext import commands
 import mysql.connector
+from config import token_discord
 req = requests.get('https://ifconfig.co/')
+print(token_discord)
 
 print(req)
-
-
-bot = commands.Bot(command_prefix="!", help_command = None,intents=disnake.Intents.all())
-print('start')
-
 
 host = 'db4.myarena.ru'
 database = 'u35192_devitka'
@@ -32,6 +29,11 @@ try:
 
 except mysql.connector.Error as error:
     print('Ошибка при подключении к базе данных MySQL:', error)
+
+bot = commands.Bot(command_prefix="!", help_command = None,intents=disnake.Intents.all())
+print('start')
+
+
 @bot.event
 async def on_ready():
   while True:
@@ -84,5 +86,4 @@ async def statics(member):
     )
     await channel.send(embed=monitoring)
 print('Запустил')
-bot.run("MTEzMTU4NzczNDIwOTg0MzI1MA.GQenn8.RzdiICTDVXg-mbkyY1zn85naUDReJO25YH0MbI")
-from replit import db
+bot.run(f'{token_discord}')
