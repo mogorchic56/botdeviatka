@@ -1,21 +1,30 @@
-import disnake
+import discord
+from discord.ext import commands
 import requests
+import os
 import time
-from disnake.ext import commands
 import mysql.connector
+import asyncio
+import lxml
 from config import token_discord
-req = requests.get('https://ifconfig.co/')
-print(token_discord)
+from bs4 import BeautifulSoup
 
-print(req)
+#url = 'https://ifconfig.co/'
+#response = requests.get(url)
+#soup = BeautifulSoup(response.text, 'lxml')
+#quotes = soup.find_all('div', class_='l-box')
+#for quote in quotes:
+ #print(quote)
+  
+
 
 host = 'db4.myarena.ru'
 database = 'u35192_devitka'
 user = 'u35192_devitka'
 password = '123456qwe'
-
+global mydb
 try:
-    connection = mysql.connector.connect(
+    mydb = mysql.connector.connect(
         host=host,
         database=database,
         user=user,
@@ -24,66 +33,58 @@ try:
 
     )
 
-    if connection.is_connected():
+    if mydb.is_connected():
         print('Успешное подключение к базе данных MySQL')
 
 except mysql.connector.Error as error:
     print('Ошибка при подключении к базе данных MySQL:', error)
-
-bot = commands.Bot(command_prefix="!", help_command = None,intents=disnake.Intents.all())
+bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 print('start')
-
 
 @bot.event
 async def on_ready():
-  while True:
-    time.sleep(3)
-    req = requests.get('https://api.battlemetrics.com/servers/17389558')
-    task = req.json()
-    data = task.get('data')
-    count = data.get('attributes')
-    name = count.get('name')
-    players = count.get('players')
-    maxPlayers = count.get('maxPlayers')
-    status = count.get('status')
-    print(f'{name}: {players}/{maxPlayers}.\n {status}')
-    if status == 'online':
-      activity = disnake.Activity(
-          name = f"🟢 {players}/{maxPlayers}",
-          type = disnake.ActivityType.watching,
-      )
-      await bot.change_presence(activity=activity)
-    else:
-        activity = disnake.Activity(
-          name = "🔴 Сервер выключен",
-          type = disnake.ActivityType.watching,
-        )
-        await bot.change_presence(activity=activity)
-    print(f"Bot {bot.user} is ready to work!")
-
+  print('Запустился')
+  bot.loop.create_task(send_message())
+  bot.loop.create_task(on_message())
+  #mydb = mysql.connector.connect(
+     #   host=host,
+      #  database=database,
+       # user=user,
+        #password=password)
+  #if mydb.is_connected():
+     #   print('Успешное подключение к базе данных MySQL')
+async def on_message():
+        channel = bot.get_channel(1132323086167978025)
+        embedVar = discord.Embed(title="Title", description="Desc", color=0x00ff00)
+        embedVar.add_field(name="Field1", value="hi", inline=False)
+        embedVar.add_field(name="Field2", value="hi2", inline=False)
+        await channel.send(embed=embedVar)
+        
+async def send_message():
+    while True:
+      channel = bot.get_channel(1133039161453064375)
+      mycursor = mydb.cursor()
+      mycursor.execute("SELECT * FROM log_game")
+      myresult = mycursor.fetchall()
+      for x in myresult:
+        await channel.send(x[4])
+          #await asyncio.sleep(15)
 
 @bot.event
 async def on_member_join(member):
-    channel = bot.get_channel(1128186670521516124)
-    embed = disnake.Embed(
+    channel = bot.get_channel(1132323086167978025)
+    embed = discord.Embed(
         title="Новый участник!",
         description=f"{member.name}",
         color=0xFF0000
     )
     await channel.send(embed=embed)
-  
 
-
-
+      
 @bot.command()
 async def statics(member):
-    print(help)
-    channel = bot.get_channel(1128186670521516124)
-    monitoring = disnake.Embed(
-    title = on_ready.name,
-    description=f"{on_ready.players}/{on_ready.maxPlayers}",
-    color=0xFF0000
-    )
-    await channel.send(embed=monitoring)
+    print('hello')
+
+
 print('Запустил')
 bot.run(f'{token_discord}')
