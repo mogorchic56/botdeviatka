@@ -9,12 +9,12 @@ import lxml
 from config import token_discord
 from bs4 import BeautifulSoup
 
-#url = 'https://ifconfig.co/'
-#response = requests.get(url)
-#soup = BeautifulSoup(response.text, 'lxml')
-#quotes = soup.find_all('div', class_='l-box')
-#for quote in quotes:
- #print(quote)
+url = 'https://ifconfig.co/'
+response = requests.get(url)
+soup = BeautifulSoup(response.text, 'lxml')
+quotes = soup.find_all('div', class_='l-box')
+for quote in quotes:
+  print(quote)
   
 
 
@@ -45,7 +45,7 @@ print('start')
 async def on_ready():
   print('Запустился')
   bot.loop.create_task(send_message())
-  bot.loop.create_task(on_message())
+  #bot.loop.create_task(on_message())
   #mydb = mysql.connector.connect(
      #   host=host,
       #  database=database,
@@ -61,13 +61,11 @@ async def on_message():
         await channel.send(embed=embedVar)
         
 async def send_message():
-    while True:
       channel = bot.get_channel(1133039161453064375)
       mycursor = mydb.cursor()
-      mycursor.execute("SELECT * FROM log_game")
+      mycursor.execute("SELECT * FROM log_game ORDER BY Date DESC LIMIT 50")
       myresult = mycursor.fetchall()
-      for x in myresult:
-        await channel.send(x[4])
+      await channel.send(myresult[4])
           #await asyncio.sleep(15)
 
 @bot.event
